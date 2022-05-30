@@ -19,12 +19,9 @@ import {
   Paper,
 } from "@mui/material";
 import { ColorPicker } from "./ColorPicker";
-
-interface ImageSettings {
-  src: string;
-  height: number;
-  width: number;
-}
+import { Header } from "./Header";
+import { Image } from "./Image";
+import { ImageSettings } from "./types";
 
 function App() {
   const [value, setValue] = useState("test");
@@ -56,19 +53,11 @@ function App() {
     downloadBlob(blob, `qrcode.svg`);
   };
 
+  console.log(image);
+
   return (
     <>
-      <AppBar position="static" enableColorOnDark>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, textAlign: "center" }}
-          >
-            QR Code Creator
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header />
       <Box
         sx={{
           display: "flex",
@@ -78,7 +67,7 @@ function App() {
           m: 2,
         }}
       >
-        <Card>
+        <Card sx={{ bgcolor: "background.main" }}>
           <CardContent
             sx={{
               display: "flex",
@@ -98,12 +87,7 @@ function App() {
                 size={200}
                 bgColor={bgColor}
                 fgColor={fgColor}
-                imageSettings={{
-                  excavate: true,
-                  src: "https://upload.wikimedia.org/wikipedia/commons/a/a3/.NET_Logo.svg",
-                  height: 100,
-                  width: 100,
-                }}
+                imageSettings={image}
               />
             </Box>
             <TextField
@@ -123,6 +107,7 @@ function App() {
               color={bgColor}
               setColor={setBgColor}
             />
+            <Image image={image} setImage={setImage} />
           </CardContent>
 
           <CardActions>

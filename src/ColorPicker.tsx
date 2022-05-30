@@ -20,8 +20,8 @@ export const ColorPicker = ({ name, color, setColor }: Props) => {
   };
 
   return (
-    <Paper>
-      <Accordion sx={{ mt: 2, borderRadius: 12 }}>
+    <Paper elevation={4} sx={{ mt: 2 }}>
+      <Accordion>
         <AccordionSummary
           aria-controls="panel1a-content"
           id="panel1a-header"
