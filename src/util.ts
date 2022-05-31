@@ -1,6 +1,5 @@
 export const downloadBlob = (blob: Blob, filename: string) => {
   const objectUrl = URL.createObjectURL(blob);
-
   const link = document.createElement("a");
   link.href = objectUrl;
   link.download = filename;
@@ -11,17 +10,25 @@ export const downloadBlob = (blob: Blob, filename: string) => {
   setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
 };
 
-export const downloadSVG = (svgElem: HTMLDivElement | null) => {
+export const downloadSVG = (
+  svgElem: HTMLDivElement | null,
+  isLarge: boolean
+) => {
   const first = svgElem as unknown as HTMLElement;
   const content = first.children[0].innerHTML;
-  const contentWithSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" height="200" width="200" viewBox="0 0 29 29">${content}</svg>`;
+  const size = isLarge ? 1000 : 200;
+  const contentWithSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" height="${size}" width="${size}" viewBox="0 0 29 29">${content}</svg>`;
   const blob = new Blob([contentWithSvg], { type: "image/svg+xml" });
   downloadBlob(blob, "qrcode.svg");
 };
 
-export const downloadCanvas = (elem: HTMLDivElement | null) => {
+export const downloadCanvas = (
+  elem: HTMLDivElement | null,
+  isLarge: boolean
+) => {
   const first = elem as unknown as HTMLElement;
-  const content = (first.children[0] as HTMLCanvasElement).toDataURL();
+  const child = isLarge ? 2 : 0;
+  const content = (first.children[child] as HTMLCanvasElement).toDataURL();
   const blob = dataURIToBlob(content);
   downloadBlob(blob, "qrcode.png");
 };

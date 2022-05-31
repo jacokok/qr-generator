@@ -25,13 +25,22 @@ function App() {
   const handleChange = (event: any) => setValue(event.target.value);
   const svgRef = useRef<HTMLDivElement>(null);
 
-  const handleFileDownload = () => {
+  const handleFileDownload = (isLarge: boolean) => {
     if (image?.src) {
-      downloadCanvas(svgRef.current);
+      downloadCanvas(svgRef.current, isLarge);
     } else {
-      downloadSVG(svgRef.current);
+      downloadSVG(svgRef.current, isLarge);
     }
   };
+
+  const largerImage = image
+    ? {
+        src: image.src,
+        excavate: image.excavate,
+        height: image.height * 5,
+        width: image.width * 5,
+      }
+    : image;
 
   return (
     <>
@@ -90,13 +99,23 @@ function App() {
                 }}
               >
                 {image?.src ? (
-                  <QRCodeCanvas
-                    value={value}
-                    size={200}
-                    bgColor={bgColor}
-                    fgColor={fgColor}
-                    imageSettings={image}
-                  />
+                  <>
+                    <QRCodeCanvas
+                      value={value}
+                      size={200}
+                      bgColor={bgColor}
+                      fgColor={fgColor}
+                      imageSettings={image}
+                    />
+                    <QRCodeCanvas
+                      hidden={true}
+                      value={value}
+                      size={1000}
+                      bgColor={bgColor}
+                      fgColor={fgColor}
+                      imageSettings={largerImage}
+                    />
+                  </>
                 ) : (
                   <QRCodeSVG
                     value={value}
@@ -112,10 +131,17 @@ function App() {
             <CardActions>
               <Button
                 color="primary"
-                onClick={handleFileDownload}
+                onClick={() => handleFileDownload(false)}
                 variant="outlined"
               >
                 Download
+              </Button>
+              <Button
+                color="secondary"
+                onClick={() => handleFileDownload(true)}
+                variant="outlined"
+              >
+                Download Large
               </Button>
             </CardActions>
           </Card>
