@@ -2,11 +2,9 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
   Button,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Paper,
   Slider,
   styled,
@@ -82,6 +80,14 @@ export const Image = ({ image, setImage }: Props) => {
           <Typography>Upload Image</Typography>
         </AccordionSummary>
         <AccordionDetails>
+          <Typography
+            variant="caption"
+            component="div"
+            color="text.secondary"
+            sx={{ mb: 1 }}
+          >
+            Uploading image will download in PNG instead of SVG format
+          </Typography>
           <label htmlFor="contained-button-file">
             <Input
               accept="image/*"
@@ -94,7 +100,14 @@ export const Image = ({ image, setImage }: Props) => {
               Upload
             </Button>
             <Button onClick={clear}>Clear</Button>
-            <Typography>{upload?.name}</Typography>
+            <Typography
+              variant="caption"
+              component="div"
+              color="text.primary"
+              sx={{ mt: 1 }}
+            >
+              {upload?.name}
+            </Typography>
           </label>
           <Slider
             size="small"

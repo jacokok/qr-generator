@@ -1,27 +1,20 @@
 import { useState, useRef } from "react";
-import { QRCodeSVG } from "qrcode.react";
-import { HexColorPicker } from "react-colorful";
+import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import {
   Box,
   TextField,
   Button,
-  Typography,
-  AppBar,
-  Toolbar,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
-  CardMedia,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Paper,
+  Grid,
+  Divider,
 } from "@mui/material";
 import { ColorPicker } from "./ColorPicker";
 import { Header } from "./Header";
 import { Image } from "./Image";
 import { ImageSettings } from "./types";
+import { downloadCanvas, downloadSVG } from "./util";
 
 function App() {
   const [value, setValue] = useState("test");
@@ -32,91 +25,102 @@ function App() {
   const handleChange = (event: any) => setValue(event.target.value);
   const svgRef = useRef<HTMLDivElement>(null);
 
-  function downloadBlob(blob: Blob, filename: string) {
-    const objectUrl = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
-  }
-
-  const download = () => {
-    const first = svgRef.current as unknown as HTMLElement;
-    const content = first.children[0].innerHTML;
-    const contentWithSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" height="200" width="200" viewBox="0 0 29 29">${content}</svg>`;
-    const blob = new Blob([contentWithSvg], { type: "image/svg+xml" });
-    downloadBlob(blob, `qrcode.svg`);
+  const handleFileDownload = () => {
+    if (image?.src) {
+      downloadCanvas(svgRef.current);
+    } else {
+      downloadSVG(svgRef.current);
+    }
   };
-
-  console.log(image);
 
   return (
     <>
       <Header />
-      <Box
+      <Grid
+        container
+        spacing={2}
         sx={{
-          display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          m: 2,
+          alignItems: "start",
+          p: 2,
         }}
       >
-        <Card sx={{ bgcolor: "background.main" }}>
-          <CardContent
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Box
-              ref={svgRef}
+        <Grid item md={6} xs={12}>
+          <Card sx={{ bgcolor: "background.main" }}>
+            <CardContent
               sx={{
                 display: "flex",
-                alignSelf: "center",
-                mb: 2,
+                flexDirection: "column",
               }}
             >
-              <QRCodeSVG
+              <TextField
+                placeholder="QR Code Value"
                 value={value}
-                size={200}
-                bgColor={bgColor}
-                fgColor={fgColor}
-                imageSettings={image}
+                onChange={handleChange}
+                size="small"
+                fullWidth
               />
-            </Box>
-            <TextField
-              placeholder="QR Code Value"
-              value={value}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-            <ColorPicker
-              name="Foreground Color"
-              color={fgColor}
-              setColor={setFgColor}
-            />
-            <ColorPicker
-              name="Background Color"
-              color={bgColor}
-              setColor={setBgColor}
-            />
-            <Image image={image} setImage={setImage} />
-          </CardContent>
-
-          <CardActions>
-            <Button color="primary" onClick={download} variant="outlined">
-              Download
-            </Button>
-          </CardActions>
-        </Card>
-      </Box>
+              <ColorPicker
+                name="Foreground Color"
+                color={fgColor}
+                setColor={setFgColor}
+              />
+              <ColorPicker
+                name="Background Color"
+                color={bgColor}
+                setColor={setBgColor}
+              />
+              <Image image={image} setImage={setImage} />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <Card sx={{ bgcolor: "background.main" }}>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box
+                ref={svgRef}
+                sx={{
+                  display: "flex",
+                  alignSelf: "center",
+                }}
+              >
+                {image?.src ? (
+                  <QRCodeCanvas
+                    value={value}
+                    size={200}
+                    bgColor={bgColor}
+                    fgColor={fgColor}
+                    imageSettings={image}
+                  />
+                ) : (
+                  <QRCodeSVG
+                    value={value}
+                    size={200}
+                    bgColor={bgColor}
+                    fgColor={fgColor}
+                    imageSettings={image}
+                  />
+                )}
+              </Box>
+            </CardContent>
+            <Divider />
+            <CardActions>
+              <Button
+                color="primary"
+                onClick={handleFileDownload}
+                variant="outlined"
+              >
+                Download
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      </Grid>
     </>
   );
 }
