@@ -17,7 +17,11 @@ export const downloadSVG = (
   const first = svgElem as unknown as HTMLElement;
   const content = first.children[0].innerHTML;
   const size = isLarge ? 1000 : 200;
-  const contentWithSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" height="${size}" width="${size}" viewBox="0 0 29 29">${content}</svg>`;
+  const viewBox = (first.children[0] as SVGMarkerElement).viewBox.baseVal;
+  const viewBoxString = viewBox
+    ? `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`
+    : "0 0 29 29";
+  const contentWithSvg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" height="${size}" width="${size}" viewBox="${viewBoxString}">${content}</svg>`;
   const blob = new Blob([contentWithSvg], { type: "image/svg+xml" });
   downloadBlob(blob, "qrcode.svg");
 };

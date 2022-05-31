@@ -17,7 +17,7 @@ import { ImageSettings } from "./types";
 import { downloadCanvas, downloadSVG } from "./util";
 
 function App() {
-  const [value, setValue] = useState("test");
+  const [value, setValue] = useState("");
   const [bgColor, setBgColor] = useState("#fff");
   const [fgColor, setFgColor] = useState("#000");
   const [image, setImage] = useState<ImageSettings | undefined>(undefined);
